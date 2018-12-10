@@ -1,6 +1,8 @@
 import random,time,os
 path = os.getcwd()
 
+numBalloons=10
+
 #general character
 class Object:
     def __init__(self,x,y,Width,Height):
@@ -12,9 +14,20 @@ class Object:
         self.vY=0
         self.dir=1
 
+#creating balloon class
+class Balloon(Object):
+    def __init__(self,x,y,Width,Height,img):
+        Object.__init__(self,x,y,Width,Height)
+    
+        self.img= loadImage(path+'/images/'+img) 
+                            
+    def display(self):
+        image(self.img, self.x, self.y, self.Width, self.Height)
+
 class Boy(Object):
     def __init__(self,x,y,Width,Height):
         Object.__init__(self,x,y,Width,Height)
+        
         #defining keys to move the boy character - "a" for left and "d" for right
         self.keyHandler={65:False, 68:False} 
         self.imgBoy=loadImage(path+'/images/'+'boy.png')
@@ -26,16 +39,24 @@ class Boy(Object):
     def update(self):
         if self.keyHandler[65]:
             #negative value for left
-            self.vX = -5
+            self.vX = -7
             self.dir = -1
         elif self.keyHandler[68]:
             #positive value for right
-            self.vX = 5
+            self.vX = 7
             self.dir = 1
         else:
             self.vX = 0
+            
         #changing the location of the character    
         self.x += self.vX
+        
+        #limiting the movement of characters, so they do not go off screen
+        if self.x+self.Width > game.w:
+            self.x = game.w-self.Width
+        
+        if self.x<0:
+            self.x=0
     
 #same comments apply for the girl character    
 class Girl(Object):
@@ -49,15 +70,22 @@ class Girl(Object):
         
     def update(self):
         if self.keyHandler[LEFT]:
-            self.vX = -5
+            self.vX = -7
             self.dir = -1
         elif self.keyHandler[RIGHT]:
-            self.vX = 5
+            self.vX = 7
             self.dir = 1
         else:
             self.vX = 0
             
         self.x += self.vX
+        
+        #limiting the movement of characters, so they do not go off screen
+        if self.x+self.Width > game.w:
+            self.x = game.w-self.Width
+        
+        if self.x<0:
+            self.x=0
    
 class Arrow(Object):
     def __init__(self,x,y,Width,Height):
@@ -76,14 +104,25 @@ class Game:
         self.bImage1=loadImage(path+'/images/'+'2.png')
         self.bImage2=loadImage(path+'/images/'+'1.png')
         
+        self.balloons=[]
+        for i in range (numBalloons/2):
+            self.balloons.append(Balloon(random.randint(0,self.w-255),random.randint(0,300),100,100,'3.png'))
+            self.balloons.append(Balloon(random.randint(0,self.w/255),random.randint(0,300),100,100,'4.png'))
+            
+            #self.balloons.shuffle()
+        
+        #self.arrows=[]
+        #for i in range (2):
+            #self.arrows.append(Arrow)
+            
         #creating the characters                        
-        self.boy=Boy(0,600,200,150)
+        self.boy=Boy(0,600,100,150)
         self.girl=Girl(300,600,100,150)
     
     #displaying background images
     def bgDisplay(self):
             image(self.bImage1,0,0)
-            image(self.bImage2,0,300)
+            image(self.bImage2,0,200,1000,800)
     
     def update(self):
         self.boy.update()
@@ -94,11 +133,13 @@ class Game:
         self.boy.display()
         self.girl.display()
         
+        for b in self.balloons:
+            b.display()
         
-game=Game(1280,720)
+game=Game(1000,800)
         
 def setup():
-    size(800,800)
+    size(game.w,game.h)
     
 def draw():
     background(10,250,200)
@@ -116,7 +157,6 @@ def keyPressed():
     elif keyCode == 68: #d
         game.boy.keyHandler[68] = True
 
-
 def keyReleased():
     if keyCode == 65: #a
         game.boy.keyHandler[65] = False
@@ -129,9 +169,6 @@ def keyReleased():
 
 #TO Do List
 #kako arrow da nam puca - shooting the arrows??
-#limit the characters so they don't go off screen
-#randomly placing balloons
 #add score count
 #add timer
 #add sounds- on click and winning/losing/gameover
-#what to do if they shoot from the same place
