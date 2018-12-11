@@ -1,7 +1,7 @@
 import random,time,os
 path = os.getcwd()
 
-numBalloons=10
+numBalloons=50
 
 #general character
 class Object:
@@ -87,14 +87,54 @@ class Girl(Object):
         if self.x<0:
             self.x=0
    
-class Arrow(Object):
+class RedArrow(Object):
     def __init__(self,x,y,Width,Height):
-        Object.__init__(self,x,y,Gravity,Width,Height)
-        self.keyHandler={UP:False}
+        Object.__init__(self,x,y,Width,Height)
         self.imgArrow=loadImage(path+'/images/'+'arrow.png')
+        self.keyHandler={UP:False}
     
     def display(self):
-        image(self.imgArrow, self.x, self.y, self.Width, self.Height)
+        image(self.imgArrow, game.girl.x, self.y, self.Width, self.Height)
+        
+    def update(self):
+        if self.keyHandler[UP]:
+            self.vY = -7
+            self.dir = -1
+        elif self.keyHandler[UP]:
+            self.vY = 7
+            self.dir = 1
+        else:
+            self.vY = 0
+            
+        self.y += self.vY
+        
+        #limiting the movement of characters, so they do not go off screen
+        #if self.y+self.Width > game.w:
+            #self.x = game.w-self.Width
+        
+       # if self.x<0:
+            #self.x=0
+        
+class BlueArrow(Object):
+    def __init__(self,x,y,Width,Height):
+        Object.__init__(self,x,y,Width,Height)
+        self.imgArrow=loadImage(path+'/images/'+'arrow.png')
+        self.keyHandler={87:False} #87
+    
+    def display(self):
+        image(self.imgArrow, game.boy.x, self.y, self.Width, self.Height)
+        
+    def update(self):
+        if self.keyHandler[87]:
+            self.vY = -7
+            self.dir = -1
+        elif self.keyHandler[87]:
+            self.vY = 7
+            self.dir = 1
+        else:
+            self.vY = 0
+            
+        self.y += self.vY
 
 #creating the main game class
 class Game:
@@ -107,7 +147,7 @@ class Game:
         self.balloons=[]
         for i in range (numBalloons/2):
             self.balloons.append(Balloon(random.randint(0,self.w-255),random.randint(0,300),100,100,'3.png'))
-            self.balloons.append(Balloon(random.randint(0,self.w/255),random.randint(0,300),100,100,'4.png'))
+            self.balloons.append(Balloon(random.randint(0,self.w-255),random.randint(0,300),100,100,'4.png'))
             
             #self.balloons.shuffle()
         
@@ -115,9 +155,12 @@ class Game:
         #for i in range (2):
             #self.arrows.append(Arrow)
             
-        #creating the characters                        
+        #creating the characters and arrows                       
         self.boy=Boy(0,600,100,150)
         self.girl=Girl(300,600,100,150)
+        self.redArrow=RedArrow(self.girl.x,self.girl.y-80,100,100)
+        self.blueArrow=BlueArrow(self.boy.x,self.boy.y-80,100,100)
+        
     
     #displaying background images
     def bgDisplay(self):
@@ -127,14 +170,22 @@ class Game:
     def update(self):
         self.boy.update()
         self.girl.update()
+    
+        self.redArrow.update()
+        self.blueArrow.update()
             
     def display(self):
         self.bgDisplay()
         self.boy.display()
         self.girl.display()
+        self.redArrow.display()
+        self.blueArrow.display()
         
-        for b in self.balloons:
-            b.display()
+        
+        
+        
+        #for b in self.balloons:
+         #   b.display()
         
 game=Game(1000,800)
         
@@ -156,6 +207,10 @@ def keyPressed():
         game.boy.keyHandler[65] = True
     elif keyCode == 68: #d
         game.boy.keyHandler[68] = True
+    elif keyCode == 87: #w
+        game.blueArrow.keyHandler[87] = True
+    elif keyCode == UP: 
+        game.redArrow.keyHandler[UP] = True
 
 def keyReleased():
     if keyCode == 65: #a
@@ -168,7 +223,10 @@ def keyReleased():
         game.girl.keyHandler[RIGHT] = False
 
 #TO Do List
-#kako arrow da nam puca - shooting the arrows??
+#postaviti condition za shooting- ako izlazi sa screena i ako pukne balon da se opet stvori
+#napraviti da se ne pomjera lijevo desno sa character-- napraviti shooting mode da provjerimo ukoliko velocity nije 0 i kad je 0
+#promijeniti slicice
+
 #add score count
 #add timer
 #add sounds- on click and winning/losing/gameover
