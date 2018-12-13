@@ -27,8 +27,6 @@ class Balloon(Object):
 class Boy(Object):
     def __init__(self,x,y,Width,Height):
         Object.__init__(self,x,y,Width,Height)
-        self.points = 0
-        self.arrows = []
         
         #defining keys to move the boy character - "a" for left and "d" for right
         self.keyHandler={65:False, 68:False} 
@@ -66,8 +64,6 @@ class Girl(Object):
         Object.__init__(self,x,y,Width,Height)
         self.keyHandler={LEFT:False, RIGHT:False}
         self.imgGirl = loadImage(path+'/images/'+'girl.png')
-        self.points = 0
-        self.arrows = []
     
     def display(self):
         image(self.imgGirl, self.x, self.y, self.Width, self.Height)
@@ -130,24 +126,18 @@ class BlueArrow(Object):
         Object.__init__(self,x,y,Width,Height)
         self.imgArrow=loadImage(path+'/images/'+'arrow.png')
         self.keyHandler={87:False} #87
-        self.flying = 0
     
     def display(self):
-        if self.flying != 1:
-            image(self.imgArrow, game.boy.x, self.y, self.Width, self.Height)
-        else:
-            image(self.imgArrow, self.x, self.y, self.Width, self.Height) 
+        image(self.imgArrow, game.boy.x, self.y, self.Width, self.Height)
         
     def update(self):
         if self.keyHandler[87]:
-            self.flying = 1
             self.vY = -7
             self.dir = -1
         elif self.keyHandler[87]:
             self.vY = 7
             self.dir = 1
         else:
-            self.x = game.boy.x
             self.vY = 0
             
         self.y += self.vY
@@ -198,7 +188,7 @@ class Game:
         self.blueArrow.display()
 
         #for b in self.balloons:
-            #b.display()
+         #   b.display()
         
 game=Game(1000,800)
         
@@ -235,7 +225,9 @@ def keyReleased():
     elif keyCode == RIGHT:
         game.girl.keyHandler[RIGHT] = False
 
-#To Do List:
-#Create a condition for shooting - if it touches a balloon and goes off screen, the arrow generates again
-#Adding a score counter; the score will be shown in the end
-#Adding sounds: click, win and gameover
+#TO Do List
+#postaviti condition za shooting- ako izlazi sa screena i ako pukne balon da se opet stvori
+#napraviti da se ne pomjera lijevo desno sa character-- napraviti shooting mode da provjerimo ukoliko velocity nije 0 i kad je 0
+#add score count
+#add timer
+#add sounds- on click and winning/losing/gameover
