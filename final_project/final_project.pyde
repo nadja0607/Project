@@ -125,6 +125,7 @@ class RedArrow(Object):
     def __init__(self,x,y,Width,Height):
         Object.__init__(self,x,y,Width,Height)
         self.imgArrow=loadImage(path+'/images/'+'arrow.png')
+        self.imgGameOver=loadImage(path+'/images/'+'gameover.png')
         self.keyHandler={UP:False}
         self.flying = 0
         self.score= 0
@@ -336,7 +337,7 @@ class Game:
             self.redArrow.display()
             self.blueArrow.display()
             
-        #displaying score
+            #displaying score
             textSize(32)
             fill(255,0,0)
             text("GIRL:"+str(self.redArrow.score),10,30)
@@ -346,16 +347,16 @@ class Game:
             if gameover==0:
                 for b in self.balloons:
                     b.display()
-            else:
+        else:
             #Instructions to play
-                textSize(25)
-                fill(255,255,255)
-                text("Player 1 - Boy moves with WASD",10,30)
-                text("Player 2 - Girl moves with the keyboard arrows",10,60)
-                text("The player that shoots his balloons first WINS the game!",10,90)
-                text("Click START to begin the game",10,200)
-            
-                image(self.startButton,game.w/2-100,game.h/2-50,200,100)
+            textSize(25)
+            fill(255,255,255)
+            text("Player 1 - Boy moves with WASD",10,30)
+            text("Player 2 - Girl moves with the keyboard arrows",10,60)
+            text("The player that shoots his balloons first WINS the game!",10,90)
+            text("Click START to begin the game",10,200)
+        
+            image(self.startButton,game.w/2-100,game.h/2-50,200,100)
             
        
         
